@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord ORION TECHNOLOGIES SARL</title>
+
+    <!-- Google Fonts: Ubuntu -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* --- COULEURS DU LOGO (Palette d'Orion Technologies) --- */
+        :root {
+            /* Bleu vif du logo */
+            --orion-blue: #2E81E9; /* Bleu principal */
+            --orion-blue-hover: #1A6FD6; /* Bleu au survol */
+
+            /* Noir très foncé du logo */
+            --orion-dark: #12151B; /* Noir principal */
+            --orion-dark-alt: #1E222A; /* Noir plus clair (pour sous-menus, etc.) */
+
+            /* Couleurs d'accentuation */
+            --orion-light: #F8F9FA; /* Fond clair */
+            --orion-white: #FFFFFF; /* Blanc */
+            --orion-gray-muted: rgba(255, 255, 255, 0.7); /* Texte atténué */
+        }
+
+        body {
+            background-color: var(--orion-light);
+            font-family: 'Ubuntu', sans-serif;
+            color: var(--orion-dark);
+        }
+
+        /* --- STYLES DE LA SIDEBAR --- */
+        .sidebar {
+            min-height: 100vh;
+            background-color: var(--orion-dark);
+            color: var(--orion-white);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar .nav-link {
+            color: var(--orion-gray-muted);
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.25rem;
+            transition: all 0.2s ease;
+            font-weight: 400;
+        }
+
+        .sidebar .nav-link:hover, .sidebar .nav-link.active {
+            color: var(--orion-white);
+            background-color: var(--orion-blue);
+        }
+
+        .sidebar .nav-link i {
+            width: 24px;
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+
+        /* --- STYLES DES CARTES DE STATISTIQUES --- */
+        .stat-card {
+            border: none;
+            border-radius: 0.75rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.08) !important;
+        }
+
+        .icon-shape {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        /* Utilisation du bleu du logo pour les éléments bleus */
+        .bg-primary.bg-opacity-10 {
+            background-color: rgba(46, 129, 233, 0.1) !important;
+        }
+        .text-primary {
+            color: var(--orion-blue) !important;
+        }
+        .btn-primary {
+            background-color: var(--orion-blue);
+            border-color: var(--orion-blue);
+        }
+        .btn-primary:hover {
+            background-color: var(--orion-blue-hover);
+            border-color: var(--orion-blue-hover);
+        }
+        .btn-outline-primary {
+            color: var(--orion-blue);
+            border-color: var(--orion-blue);
+        }
+        .btn-outline-primary:hover {
+            color: var(--orion-white);
+            background-color: var(--orion-blue-hover);
+            border-color: var(--orion-blue-hover);
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container-fluid p-0">
+    <div class="row g-0">
+
+        <!-- SIDEBAR -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-3">
+            <!-- LOGO ORION TECHNOLOGIES -->
+            <div class="d-flex align-items-center mb-4 px-2 text-white text-decoration-none">
+                <!-- <img src="#" alt="Orion Technologies Logo" class="img-fluid me-2" style="max-height: 25px;"> -->
+                <span class="fs-6 fw-bold">ORION ADMIN</span>
+            </div>
+
+            <hr class="text-secondary opacity-25">
+
+            <ul class="nav nav-pills flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" aria-current="page">
+                        <i class="fa-solid fa-house"></i> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-solid fa-building"></i> Agences
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-solid fa-tags"></i> Tarifs
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-solid fa-file-signature"></i> Souscriptions
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="nav-link">
+                        <i class="fa-solid fa-ticket"></i> Tickets
+                    </a>
+                </li>
+            </ul>
+
+            <hr class="text-secondary opacity-25 mt-auto">
+
+            <div class="dropdown px-2">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-circle-user fs-4 me-2"></i>
+                    <strong>Administrateur</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser">
+                    <li><a class="dropdown-item" href="#">Profil</a></li>
+                    <li><a class="dropdown-item" href="#">Paramètres</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Déconnexion</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- CONTENU PRINCIPAL -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+
+            <!-- HEADER -->
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-4 border-bottom">
+                <h1 class="h2 fw-bold text-orion-dark">Tableau de Bord</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <button type="button" class="btn btn-sm btn-outline-primary me-2">
+                        <i class="fa-solid fa-download me-1"></i> Exporter
+                    </button>
+                    <button type="button" class="btn btn-sm btn-primary">
+                        <i class="fa-solid fa-plus me-1"></i> Nouvelle Agence
+                    </button>
+                </div>
+            </div>
+
+            <!-- CARTES KPI -->
+            <div class="row g-3 mb-4">
+
+                <!-- Nombre d'Agences -->
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card stat-card shadow-sm h-100 bg-white">
+                        <div class="card-body d-flex align-items-center justify-content-between p-4">
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase">Agences</span>
+                                <h3 class="fw-bold mb-0 mt-1 text-orion-dark">24</h3>
+                                <span class="text-success small fw-medium"><i class="fa-solid fa-arrow-up me-1"></i>+2 ce mois</span>
+                            </div>
+                            <div class="icon-shape bg-primary bg-opacity-10 text-primary">
+                                <i class="fa-solid fa-building"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nombre de Souscriptions -->
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card stat-card shadow-sm h-100 bg-white">
+                        <div class="card-body d-flex align-items-center justify-content-between p-4">
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase">Souscriptions</span>
+                                <h3 class="fw-bold mb-0 mt-1 text-orion-dark">142</h3>
+                                <span class="text-success small fw-medium"><i class="fa-solid fa-arrow-up me-1"></i>+12% vs mois dernier</span>
+                            </div>
+                            <div class="icon-shape bg-success bg-opacity-10 text-success">
+                                <i class="fa-solid fa-file-signature"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nombre de Tickets -->
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card stat-card shadow-sm h-100 bg-white">
+                        <div class="card-body d-flex align-items-center justify-content-between p-4">
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase">Tickets Ouverts</span>
+                                <h3 class="fw-bold mb-0 mt-1 text-orion-dark">18</h3>
+                                <span class="text-danger small fw-medium"><i class="fa-solid fa-circle-exclamation me-1"></i>5 urgents</span>
+                            </div>
+                            <div class="icon-shape bg-warning bg-opacity-10 text-warning">
+                                <i class="fa-solid fa-ticket"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Taux de Résolution -->
+                <div class="col-12 col-sm-6 col-xl-3">
+                    <div class="card stat-card shadow-sm h-100 bg-white">
+                        <div class="card-body d-flex align-items-center justify-content-between p-4">
+                            <div>
+                                <span class="text-muted small fw-bold text-uppercase">Taux de Résolution</span>
+                                <h3 class="fw-bold mb-0 mt-1 text-orion-dark">94.2%</h3>
+                                <span class="text-success small fw-medium"><i class="fa-solid fa-circle-check me-1"></i>+1.5%</span>
+                            </div>
+                            <div class="icon-shape bg-info bg-opacity-10 text-info">
+                                <i class="fa-solid fa-chart-pie"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- SECTION CHARTS -->
+            <div class="row g-3 mb-4">
+
+                <!-- Courbe : Évolution des souscriptions -->
+                <div class="col-12 col-lg-8">
+                    <div class="card shadow-sm border-0 h-100 bg-white">
+                        <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0 fw-bold text-orion-dark">Évolution des Souscriptions</h5>
+                            <span class="badge bg-light text-dark border">Année 2026</span>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="subscriptionsChart" height="120"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Donut : Statut des Tickets -->
+                <div class="col-12 col-lg-4">
+                    <div class="card shadow-sm border-0 h-100 bg-white">
+                        <div class="card-header bg-white py-3 border-0">
+                            <h5 class="card-title mb-0 fw-bold text-orion-dark">Statut des Tickets</h5>
+                        </div>
+                        <div class="card-body d-flex align-items-center justify-content-center">
+                            <canvas id="ticketsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TABLEAU DES DERNIERS TICKETS -->
+            <div class="card shadow-sm border-0 bg-white">
+                <div class="card-header bg-white py-3 border-0 d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 fw-bold text-orion-dark">Derniers Tickets Soumis</h5>
+                    <a href="#" class="btn btn-sm btn-link text-decoration-none text-primary">Voir tout <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#ID</th>
+                                <th>Agence</th>
+                                <th>Sujet</th>
+                                <th>Priorité</th>
+                                <th>Statut</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>#TK-1024</strong></td>
+                                <td>Agence Kara</td>
+                                <td>Erreur lors du paiement mensuel</td>
+                                <td><span class="badge bg-danger">Haute</span></td>
+                                <td><span class="badge bg-warning text-dark">En cours</span></td>
+                                <td>23 Juil. 2026</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#TK-1023</strong></td>
+                                <td>Agence Lomé Centre</td>
+                                <td>Changement de formule d'abonnement</td>
+                                <td><span class="badge bg-secondary">Moyenne</span></td>
+                                <td><span class="badge bg-success">Résolu</span></td>
+                                <td>22 Juil. 2026</td>
+                            </tr>
+                            <tr>
+                                <td><strong>#TK-1022</strong></td>
+                                <td>Agence Kpalimé</td>
+                                <td>Problème d'accès aux rapports PDF</td>
+                                <td><span class="badge bg-info text-dark">Basse</span></td>
+                                <td><span class="badge bg-primary">Nouveau</span></td>
+                                <td>21 Juil. 2026</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap 5 JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Config globale pour appliquer la police Ubuntu sur Chart.js
+    Chart.defaults.font.family = "'Ubuntu', sans-serif";
+
+    // 1. Graphique d'évolution des souscriptions (Bleu du logo pour la ligne)
+    const ctxSub = document.getElementById('subscriptionsChart').getContext('2d');
+    new Chart(ctxSub, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil'],
+            datasets: [{
+                label: 'Souscriptions',
+                data: [12, 19, 15, 25, 22, 30, 38],
+                borderColor: '#2E81E9', // Bleu vif du logo
+                backgroundColor: 'rgba(46, 129, 233, 0.08)',
+                fill: true,
+                tension: 0.3,
+                borderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // 2. Graphique des tickets par statut (Bleu du logo pour un segment)
+    const ctxTicket = document.getElementById('ticketsChart').getContext('2d');
+    new Chart(ctxTicket, {
+        type: 'doughnut',
+        data: {
+            labels: ['Nouveaux', 'En cours', 'Résolus'],
+            datasets: [{
+                data: [5, 8, 20],
+                backgroundColor: ['#2E81E9', '#ffc107', '#198754'] // Bleu vif du logo, Jaune, Vert
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'bottom' }
+            }
+        }
+    });
+</script>
+
+</body>
+</html>

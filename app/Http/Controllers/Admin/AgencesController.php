@@ -32,16 +32,16 @@ class AgencesController extends Controller
      */
     public function store(Request $request)
     {
-        // 1. Validation des champs
+        // 1. Validation des champs (noms en français)
         $request->validate([
-            'name' => 'required|string|max:255',
+            'nom' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:agences,email',
-            'phone' => 'nullable|string|max:50',
-            'city' => 'nullable|string|max:255',
-            'agence_manager' => 'nullable|string|max:255',
-            'address' => 'nullable|string|max:255',
+            'telephone' => 'nullable|string|max:50',
+            'ville' => 'nullable|string|max:255',
+            'responsable' => 'nullable|string|max:255',
+            'adresse' => 'nullable|string|max:255',
             'url' => 'nullable|url|max:255',
-            'status' => 'nullable|boolean',
+            'statut' => 'nullable|boolean',
         ]);
 
         try {
@@ -54,16 +54,16 @@ class AgencesController extends Controller
 
             // 2. Création directe de l'agence
             Agence::create([
-                'agence_code' => $agenceCode,
-                'api_key' => $apiKey,   
+                'code_agence' => $agenceCode,
+                'cle_api' => $apiKey,   
                 'url' => $request->url,
-                'name' => $request->name,
+                'nom' => $request->nom,
                 'email' => $request->email,
-                'phone' => $request->phone,
-                'city' => $request->city,
-                'agence_manager' => $request->agence_manager,
-                'address' => $request->address,
-                'status' => $request->has('status') ? $request->status : 1,
+                'telephone' => $request->telephone,
+                'ville' => $request->ville,
+                'responsable' => $request->responsable,
+                'adresse' => $request->adresse,
+                'statut' => $request->has('statut') ? $request->statut : 1,
             ]);
 
             return redirect()->back()

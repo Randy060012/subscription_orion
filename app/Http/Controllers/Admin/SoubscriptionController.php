@@ -18,8 +18,8 @@ class SoubscriptionController extends Controller
     {
         $soubscriptions = Soubscription::with(['agence', 'tarif'])->latest()->get();
 
-        $agences = Agence::where('status', 1)->get();
-        $tarifs = Tarif::where('is_active', 1)->get();
+        $agences = Agence::where('statut', 1)->get();
+        $tarifs = Tarif::where('est_actif', 1)->get();
 
         // Calculs KPI
         $totalActifs = $soubscriptions->where('status', 1)->count();
@@ -33,7 +33,7 @@ class SoubscriptionController extends Controller
         })->count();
 
         $revenuTotal = $soubscriptions->where('status', 1)->sum(function ($s) {
-            return $s->tarif ? $s->tarif->price : 0;
+            return $s->tarif ? $s->tarif->prix : 0;
         });
 
         return view('pages.soubscriptions.index', compact(
@@ -72,7 +72,7 @@ class SoubscriptionController extends Controller
             $tarif = Tarif::findOrFail($request->tarif_id);
 
             $dateDebut = Carbon::now();
-            $dateFin   = $dateDebut->copy()->addDays((int) $tarif->trial_period_days);
+            $dateFin   = $dateDebut->copy()->addDays((int) $tarif->duree_jours);
 
             Soubscription::create([
                 'agence_id'  => $request->agence_id,

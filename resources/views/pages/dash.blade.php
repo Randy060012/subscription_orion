@@ -424,7 +424,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between align-items-center">
-                                <strong>{{ $agence->name }}</strong>
+                                <strong>{{ $agence->nom }}</strong>
                                 <span class="fw-bold text-orion-dark">{{ $agence->score }}</span>
                             </div>
                             <div class="progress" style="height:6px;">

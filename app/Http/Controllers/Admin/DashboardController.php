@@ -22,8 +22,8 @@ class DashboardController extends Controller
         $agencesThisMonth = Agence::whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
-        $agencesActives = Agence::where('status', 1)->count();
-        $agencesInactives = Agence::where('status', 0)->count();
+        $agencesActives = Agence::where('statut', 1)->count();
+        $agencesInactives = Agence::where('statut', 0)->count();
 
         // Souscriptions
         $totalSubscriptions     = Soubscription::count();
@@ -78,7 +78,7 @@ class DashboardController extends Controller
                 'icon'       => 'plus',
                 'icon_bg'    => 'bg-success',
                 'title'      => 'Nouvelle agence créée',
-                'subtitle'   => $a->name . ' — ' . ($a->city ?? 'Ville non renseignée'),
+                'subtitle'   => $a->nom . ' — ' . ($a->ville ?? 'Ville non renseignée'),
                 'time'       => $a->created_at->diffForHumans(),
                 'created_at' => $a->created_at,
             ];

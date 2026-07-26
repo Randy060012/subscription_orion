@@ -57,9 +57,9 @@
 
         @php
         $totalPlans = $plans->count();
-        $actifs = $plans->where('is_active', 1)->count();
-        $inactifs = $plans->where('is_active', 0)->count();
-        $avecEssai = $plans->where('trial_period_days', '>', 0)->count();
+        $actifs = $plans->where('est_actif', 1)->count();
+        $inactifs = $plans->where('est_actif', 0)->count();
+        $avecEssai = $plans->where('duree_jours', '>', 0)->count();
         @endphp
 
         <!-- Total Plans -->
@@ -161,18 +161,18 @@
                         <tr>
                             <td><strong>{{ $loop->iteration }}</strong></td>
                             <td>
-                                <div class="fw-bold text-primary">{{ $plan->name }}</div>
+                                <div class="fw-bold text-primary">{{ $plan->nom }}</div>
                                 <span class="text-muted small">{{ Str::limit($plan->description, 40) }}</span>
                             </td>
-                            <td><span class="badge bg-light text-dark border">{{ ucfirst($plan->billing_frequency) }}</span></td>
-                            <td class="fw-bold text-orion-dark">{{ number_format($plan->price, 0, ',', ' ') }} FCFA <small class="text-muted">/{{ $plan->billing_frequency == 'annuel' ? 'an' : 'mois' }}</small></td>
+                            <td><span class="badge bg-light text-dark border">{{ ucfirst($plan->frequence_facturation) }}</span></td>
+                            <td class="fw-bold text-orion-dark">{{ number_format($plan->prix, 0, ',', ' ') }} FCFA <small class="text-muted">/{{ $plan->frequence_facturation == 'annuel' ? 'an' : 'mois' }}</small></td>
                             <td>
-                                {{ $plan->max_agencies == 0 ? 'Illimité' : $plan->max_agencies }} Agence{{ $plan->max_agencies > 1 ? 's' : '' }}
-                                | Max {{ $plan->max_users == 0 ? 'Illimité' : $plan->max_users }} Utilisateur{{ $plan->max_users > 1 ? 's' : '' }}
+                                {{ $plan->max_agences == 0 ? 'Illimité' : $plan->max_agences }} Agence{{ $plan->max_agences > 1 ? 's' : '' }}
+                                | Max {{ $plan->max_utilisateurs == 0 ? 'Illimité' : $plan->max_utilisateurs }} Utilisateur{{ $plan->max_utilisateurs > 1 ? 's' : '' }}
                             </td>
                             <td><span class="badge bg-info text-dark">—</span></td>
                             <td>
-                                @if($plan->is_active)
+                                @if($plan->est_actif)
                                 <span class="badge bg-success">Actif</span>
                                 @else
                                 <span class="badge bg-danger">Inactif</span>
@@ -209,66 +209,66 @@
                     <div class="row g-3">
                         <!-- Nom du Plan -->
                         <div class="col-md-6">
-                            <label for="name" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nom du Plan <span class="text-danger">*</span></label>
+                            <label for="nom" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nom du Plan <span class="text-danger">*</span></label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-tag"></i>
-                                <input type="text" id="name" name="name" placeholder="Ex: Basic, Pro, Enterprise" value="{{ old('name') }}" required>
+                                <input type="text" id="nom" name="nom" placeholder="Ex: Basic, Pro, Enterprise" value="{{ old('nom') }}" required>
                             </div>
-                            @error('name') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('nom') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Fréquence de Facturation -->
                         <div class="col-md-6">
-                            <label for="billing_frequency" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Fréquence de Facturation <span class="text-danger">*</span></label>
+                            <label for="frequence_facturation" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Fréquence de Facturation <span class="text-danger">*</span></label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-clock"></i>
-                                <select id="billing_frequency" name="billing_frequency" required>
-                                    <option value="mensuel" {{ old('billing_frequency') == 'mensuel' ? 'selected' : '' }}>Mensuelle</option>
-                                    <option value="trimestriel" {{ old('billing_frequency') == 'trimestriel' ? 'selected' : '' }}>Trimestrielle</option>
-                                    <option value="annuel" {{ old('billing_frequency') == 'annuel' ? 'selected' : '' }}>Annuelle</option>
+                                <select id="frequence_facturation" name="frequence_facturation" required>
+                                    <option value="mensuel" {{ old('frequence_facturation') == 'mensuel' ? 'selected' : '' }}>Mensuelle</option>
+                                    <option value="trimestriel" {{ old('frequence_facturation') == 'trimestriel' ? 'selected' : '' }}>Trimestrielle</option>
+                                    <option value="annuel" {{ old('frequence_facturation') == 'annuel' ? 'selected' : '' }}>Annuelle</option>
                                 </select>
                             </div>
-                            @error('billing_frequency') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('frequence_facturation') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Prix -->
                         <div class="col-md-6">
-                            <label for="price" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Prix du Tarif (FCFA) <span class="text-danger">*</span></label>
+                            <label for="prix" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Prix du Tarif (FCFA) <span class="text-danger">*</span></label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-money-bill"></i>
-                                <input type="number" id="price" name="price" placeholder="Ex: 25000" value="{{ old('price') }}" required>
+                                <input type="number" id="prix" name="prix" placeholder="Ex: 25000" value="{{ old('prix') }}" required>
                             </div>
-                            @error('price') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('prix') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
-                        <!-- Période d'essai -->
+                        <!-- Période -->
                         <div class="col-md-6">
-                            <label for="trial_period_days" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Duree (Jours)</label>
+                            <label for="duree_jours" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Durée (Jours)</label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-calendar-day"></i>
-                                <input type="number" id="trial_period_days" name="trial_period_days" placeholder="Ex: 14" value="{{ old('trial_period_days', 0) }}">
+                                <input type="number" id="duree_jours" name="duree_jours" placeholder="Ex: 14" value="{{ old('duree_jours', 0) }}">
                             </div>
-                            @error('trial_period_days') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('duree_jours') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Nombre d'agences -->
                         <div class="col-md-6">
-                            <label for="max_agencies" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nombre d'agences autorisées <span class="text-danger">*</span></label>
+                            <label for="max_agences" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nombre d'agences autorisées <span class="text-danger">*</span></label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-building"></i>
-                                <input type="number" id="max_agencies" name="max_agencies" placeholder="0 pour illimité" value="{{ old('max_agencies') }}" required>
+                                <input type="number" id="max_agences" name="max_agences" placeholder="0 pour illimité" value="{{ old('max_agences') }}" required>
                             </div>
-                            @error('max_agencies') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('max_agences') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Nombre max d'utilisateurs -->
                         <div class="col-md-6">
-                            <label for="max_users" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nombre max d'utilisateurs <span class="text-danger">*</span></label>
+                            <label for="max_utilisateurs" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nombre max d'utilisateurs <span class="text-danger">*</span></label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-users"></i>
-                                <input type="number" id="max_users" name="max_users" placeholder="0 pour illimité" value="{{ old('max_users') }}" required>
+                                <input type="number" id="max_utilisateurs" name="max_utilisateurs" placeholder="0 pour illimité" value="{{ old('max_utilisateurs') }}" required>
                             </div>
-                            @error('max_users') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('max_utilisateurs') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Description -->
@@ -284,8 +284,8 @@
                         <!-- Switch Actif -->
                         <div class="col-12">
                             <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', true) ? 'checked' : '' }}>
-                                <label class="form-check-label fw-semibold" style="font-size: 0.85rem; color: #495057;" for="is_active">Rendre ce plan disponible immédiatement</label>
+                                <input class="form-check-input" type="checkbox" id="est_actif" name="est_actif" value="1" {{ old('est_actif', true) ? 'checked' : '' }}>
+                                <label class="form-check-label fw-semibold" style="font-size: 0.85rem; color: #495057;" for="est_actif">Rendre ce plan disponible immédiatement</label>
                             </div>
                         </div>
                     </div>

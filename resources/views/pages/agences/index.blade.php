@@ -57,9 +57,9 @@
 
         @php
         $totalAgences = $agences->count();
-        $actives = $agences->where('status', 1)->count();
-        $inactives = $agences->where('status', 0)->count();
-        $villes = $agences->pluck('city')->filter()->unique()->count();
+        $actives = $agences->where('statut', 1)->count();
+        $inactives = $agences->where('statut', 0)->count();
+        $villes = $agences->pluck('ville')->filter()->unique()->count();
         @endphp
 
         <!-- Total Agences -->
@@ -163,14 +163,14 @@
                             <td><strong>{{ $loop->iteration }}</strong></td>
 
                             <td>
-                                <div class="fw-bold">{{ $agence->name }}</div>
+                                <div class="fw-bold">{{ $agence->nom }}</div>
                                 <span class="text-muted small">{{ $agence->email }}</span>
                             </td>
-                            <td>{{ $agence->city ?? '—' }}</td>
-                            <td>{{ $agence->agence_manager ?? '—' }}</td>
-                            <td>{{ $agence->phone ?? '—' }}</td>
+                            <td>{{ $agence->ville ?? '—' }}</td>
+                            <td>{{ $agence->responsable ?? '—' }}</td>
+                            <td>{{ $agence->telephone ?? '—' }}</td>
                             <td>
-                                @if($agence->status)
+                                @if($agence->statut)
                                 <span class="badge bg-success">Active</span>
                                 @else
                                 <span class="badge bg-danger">Inactive</span>
@@ -213,12 +213,12 @@
                     <div class="row g-3">
                         <!-- Nom Agence -->
                         <div class="col-md-12">
-                            <label for="name" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nom de l'agence <span class="text-danger">*</span></label>
+                            <label for="nom" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nom de l'agence <span class="text-danger">*</span></label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-building"></i>
-                                <input type="text" id="name" name="name" placeholder="Ex: Agence Lomé Ouest" value="{{ old('name') }}" required>
+                                <input type="text" id="nom" name="nom" placeholder="Ex: Agence Lomé Ouest" value="{{ old('nom') }}" required>
                             </div>
-                            @error('name') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('nom') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Email -->
@@ -233,32 +233,32 @@
 
                         <!-- Téléphone -->
                         <div class="col-md-6">
-                            <label for="phone" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Téléphone</label>
+                            <label for="telephone" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Téléphone</label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-phone"></i>
-                                <input type="text" id="phone" name="phone" placeholder="+228 90 00 00 00" value="{{ old('phone') }}">
+                                <input type="text" id="telephone" name="telephone" placeholder="+228 90 00 00 00" value="{{ old('telephone') }}">
                             </div>
-                            @error('phone') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('telephone') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Ville -->
                         <div class="col-md-6">
-                            <label for="city" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Ville</label>
+                            <label for="ville" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Ville</label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-location-dot"></i>
-                                <input type="text" id="city" name="city" placeholder="Ex: Lomé" value="{{ old('city') }}">
+                                <input type="text" id="ville" name="ville" placeholder="Ex: Lomé" value="{{ old('ville') }}">
                             </div>
-                            @error('city') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('ville') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Nom du Responsable -->
                         <div class="col-md-6">
-                            <label for="agence_manager" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Responsable de l'agence</label>
+                            <label for="responsable" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Responsable de l'agence</label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-user"></i>
-                                <input type="text" id="agence_manager" name="agence_manager" placeholder="Nom et Prénom" value="{{ old('agence_manager') }}">
+                                <input type="text" id="responsable" name="responsable" placeholder="Nom et Prénom" value="{{ old('responsable') }}">
                             </div>
-                            @error('agence_manager') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('responsable') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <div class="col-md-12">
@@ -272,20 +272,20 @@
 
                         <!-- Adresse -->
                         <div class="col-12">
-                            <label for="address" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Adresse / Localisation</label>
+                            <label for="adresse" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Adresse / Localisation</label>
                             <div class="input-group-custom" style="align-items: flex-start;">
                                 <i class="fa-solid fa-location-dot" style="margin-top: 10px;"></i>
-                                <textarea id="address" name="address" rows="2" placeholder="Rue, quartier, repère..." style="resize: vertical;">{{ old('address') }}</textarea>
+                                <textarea id="adresse" name="adresse" rows="2" placeholder="Rue, quartier, repère..." style="resize: vertical;">{{ old('adresse') }}</textarea>
                             </div>
-                            @error('address') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                            @error('adresse') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
                         <!-- Statut -->
                         <div class="col-md-12">
-                            <label for="status" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Statut Initial</label>
+                            <label for="statut" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Statut Initial</label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-toggle-on"></i>
-                                <select id="status" name="status">
+                                <select id="statut" name="statut">
                                     <option value="1" selected>Active</option>
                                     <option value="0">Inactive</option>
                                 </select>

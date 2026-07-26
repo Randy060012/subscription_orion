@@ -11,16 +11,16 @@ class Agence extends Model
     use HasFactory;
     protected $fillable =
     [
-        'agence_code',
-        'api_key',
+        'code_agence',
+        'cle_api',
         'url',
-        'name',
+        'nom',
         'email',
-        'phone',
-        'city',
-        'agence_manager',
-        'address',
-        'status'
+        'telephone',
+        'ville',
+        'responsable',
+        'adresse',
+        'statut'
     ];
 
     public function soubscriptions()

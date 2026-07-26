@@ -165,18 +165,18 @@
                         <tr>
                             <td class="text-nowrap"><strong>{{ $loop->iteration }}</strong></td>
                             <td>
-                                <div class="fw-bold">{{ $soubscription->agence->name ?? '—' }}</div>
-                                <span class="text-muted small">{{ $soubscription->agence->email ?? '' }}{{ $soubscription->agence->phone ? ' | '.$soubscription->agence->phone : '' }}</span>
+                                <div class="fw-bold">{{ $soubscription->agence->nom ?? '—' }}</div>
+                                <span class="text-muted small">{{ $soubscription->agence->email ?? '' }}{{ $soubscription->agence->telephone ? ' | '.$soubscription->agence->telephone : '' }}</span>
                             </td>
                             <td class="text-nowrap">
                                 <span class="badge bg-light text-dark border">
-                                    {{ $soubscription->tarif->name ?? '—' }}
+                                    {{ $soubscription->tarif->nom ?? '—' }}
                                 </span>
                             </td>
                             <td class="text-nowrap">{{ $soubscription->date_debut ? $soubscription->date_debut->format('d/m/Y') : '—' }}</td>
                             <td class="text-nowrap">{{ $soubscription->date_fin ? $soubscription->date_fin->format('d/m/Y') : '—' }}</td>
                             <td class="fw-bold text-orion-dark text-nowrap">
-                                {{ $soubscription->tarif ? number_format($soubscription->tarif->price, 0, ',', ' ').' FCFA' : '—' }}
+                                {{ $soubscription->tarif ? number_format($soubscription->tarif->prix, 0, ',', ' ').' FCFA' : '—' }}
                             </td>
                             <td class="text-nowrap">
                                 @if($soubscription->status_label === 'actif')
@@ -231,7 +231,7 @@
                                     <option value="" disabled selected>Sélectionner une agence</option>
                                     @foreach($agences as $agence)
                                     <option value="{{ $agence->id }}" {{ old('agence_id') == $agence->id ? 'selected' : '' }}>
-                                        {{ $agence->name }}
+                                        {{ $agence->nom }}
                                     </option>
                                     @endforeach
                                 </select>
@@ -249,9 +249,9 @@
                                     <option value="" disabled selected>Sélectionner un tarif</option>
                                     @foreach($tarifs as $tarif)
                                     <option value="{{ $tarif->id }}"
-                                        data-days="{{ $tarif->trial_period_days }}"
+                                        data-days="{{ $tarif->duree_jours }}"
                                         {{ old('tarif_id') == $tarif->id ? 'selected' : '' }}>
-                                        {{ $tarif->name }} ({{ number_format($tarif->price, 0, ',', ' ') }} FCFA / {{ $tarif->trial_period_days }} jours)
+                                        {{ $tarif->nom }} ({{ number_format($tarif->prix, 0, ',', ' ') }} FCFA / {{ $tarif->duree_jours }} jours)
                                     </option>
                                     @endforeach
                                 </select>

@@ -41,7 +41,7 @@ class SubscriptionCheckController extends Controller
             'message' => $isActive ? 'Souscription valide.' : 'Souscription expirée ou inactive.',
             'data' => [
                 'subscription_id' => $subscription->id,
-                'plan_name' => $subscription->tarif->name ?? 'Non défini',
+                'plan_name' => $subscription->tarif->nom ?? 'Non défini',
                 'date_debut' => $subscription->date_debut ? $subscription->date_debut->format('Y-m-d H:i:s') : null,
                 'date_fin' => $subscription->date_fin ? $subscription->date_fin->format('Y-m-d H:i:s') : null,
                 'days_remaining' => ($isActive && $subscription->date_fin)

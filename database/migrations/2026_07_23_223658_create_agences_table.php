@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('agences', function (Blueprint $table) {
             $table->id();
-            $table->uuid('agence_code');
-            $table->string('api_key', 16)->unique();
+            $table->uuid('code_agence');
+            $table->string('cle_api', 16)->unique();
             $table->string('url')->nullable();
-            $table->string('name');
+            $table->string('nom');
             $table->string('email')->unique();
-            $table->string('phone')->nullable();
-            $table->string('city')->nullable();
-            $table->string('agence_manager')->nullable();
-            $table->string('address')->nullable();
-            $table->boolean('status')->default(1);
+            $table->string('telephone')->nullable();
+            $table->string('ville')->nullable();
+            $table->string('responsable')->nullable();
+            $table->string('adresse')->nullable();
+            $table->boolean('statut')->default(1);
             $table->timestamps();
         });
     }

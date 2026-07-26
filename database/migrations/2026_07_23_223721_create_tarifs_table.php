@@ -13,26 +13,26 @@ return new class extends Migration
     {
         Schema::create('tarifs', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nom');
 
             // Fréquence de facturation (mensuel, trimestriel, annuel)
-            $table->enum('billing_frequency', ['mensuel', 'trimestriel', 'annuel'])->default('mensuel');
+            $table->enum('frequence_facturation', ['mensuel', 'trimestriel', 'annuel'])->default('mensuel');
 
             // Prix du tarif en FCFA (Decimal pour la précision financière)
-            $table->decimal('price', 12, 2);
+            $table->decimal('prix', 12, 2);
 
             // Période d'essai en jours (par défaut 0)
-            $table->integer('trial_period_days')->default(0);
+            $table->integer('duree_jours')->default(0);
 
             // Limites (0 = illimité)
-            $table->integer('max_agencies')->default(0);
-            $table->integer('max_users')->default(0);
+            $table->integer('max_agences')->default(0);
+            $table->integer('max_utilisateurs')->default(0);
 
             // Description / Avantages inclus
             $table->text('description')->nullable();
 
             // Statut de disponibilité
-            $table->boolean('is_active')->default(true);
+            $table->boolean('est_actif')->default(true);
             $table->timestamps();
         });
     }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -122,36 +123,51 @@
         }
     </style>
 </head>
+
 <body>
 
     <div class="auth-container text-center">
 
-        <!-- Ligne supérieure -->
         <div class="divider-line"></div>
 
-        <!-- Titre principal -->
         <h2 class="auth-title">User Login</h2>
 
-        <!-- Formulaire -->
-        <form action="#" method="POST" class="text-start">
+        <!-- Message de statut / Succès -->
+        @if (session('status'))
+        <div class="alert alert-success text-start rounded-0 mb-4" role="alert">
+            {{ session('status') }}
+        </div>
+        @endif
+
+        <form action="{{ route('login') }}" method="POST" class="text-start">
             @csrf
 
             <!-- Email Input -->
-            <div class="input-group-custom">
-                <i class="fa-regular fa-envelope"></i>
-                <input type="email" name="email" placeholder="Email ID" required autofocus>
+            <div class="mb-3">
+                <div class="input-group-custom mb-1">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" name="email" value="{{ old('email') }}" placeholder="Email ID" required autofocus>
+                </div>
+                @error('email')
+                <small class="text-danger fw-semibold">{{ $message }}</small>
+                @enderror
             </div>
 
             <!-- Password Input -->
-            <div class="input-group-custom">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" name="password" placeholder="Password" required>
+            <div class="mb-3">
+                <div class="input-group-custom mb-1">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                @error('password')
+                <small class="text-danger fw-semibold">{{ $message }}</small>
+                @enderror
             </div>
 
-            <!-- Options: Remember me & Forgot password -->
+            <!-- Remember Me & Forgot Password -->
             <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
                 <div class="d-flex align-items-center">
-                    <input type="checkbox" class="form-check-input-custom me-2" id="remember" name="remember">
+                    <input type="checkbox" class="form-check-input-custom me-2" id="remember" name="remember" {{ old('remember') ? 'checked' : '' }}>
                     <label for="remember" class="small text-secondary" style="font-size: 0.88rem; cursor: pointer;">Remember me</label>
                 </div>
                 <a href="#" class="auth-link">Forgot Password?</a>
@@ -161,17 +177,12 @@
             <div class="mt-4 pt-2">
                 <button type="submit" class="btn btn-custom">LOGIN</button>
             </div>
-
-            <!-- Lien d'inscription sous le bouton -->
-            <div class="text-center mt-3">
-                <a href="#" class="auth-link" style="font-style: normal;">Don't have an account? <strong>Register</strong></a>
-            </div>
         </form>
 
-        <!-- Ligne inférieure -->
         <div class="divider-line"></div>
 
     </div>
 
 </body>
+
 </html>

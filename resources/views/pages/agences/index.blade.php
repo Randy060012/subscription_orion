@@ -177,7 +177,7 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                <button class="btn btn-sm btn-outline-secondary me-1" title="Voir les détails">
+                                <button class="btn btn-sm btn-outline-secondary me-1 btn-show-agence" data-id="{{ $agence->id }}" title="Voir les détails">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
                                 <button class="btn btn-sm btn-outline-primary me-1" title="Modifier">
@@ -304,6 +304,143 @@
     </div>
 </div>
 
+<!-- MODAL DETAIL AGENCE -->
+<div class="modal fade" id="showAgencyModal" tabindex="-1" aria-labelledby="showAgencyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #212529;">
+                <h5 class="modal-title fw-bold" id="showAgencyModalLabel">
+                    <i class="fa-solid fa-building me-2" style="color: #fff;"></i>Détails de l'agence : <span id="detail-nom-title"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="row g-3">
+
+                    <!-- Nom Agence -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nom de l'agence</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-building"></i>
+                            <input type="text" id="detail-nom" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                        </div>
+                    </div>
+
+                    <!-- Code Agence -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Code Agence</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-barcode"></i>
+                            <input type="text" id="detail-code" readonly style="background-color: #f8f9fa; cursor: not-allowed;" class="fw-bold">
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Adresse Email</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="email" id="detail-email" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                        </div>
+                    </div>
+
+                    <!-- Téléphone -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Téléphone</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="text" id="detail-telephone" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                        </div>
+                    </div>
+
+                    <!-- Ville -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Ville</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <input type="text" id="detail-ville" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                        </div>
+                    </div>
+
+                    <!-- Responsable -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Responsable de l'agence</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="detail-responsable" readonly style="background-color: #f8f9fa; cursor: not-allowed;">
+                        </div>
+                    </div>
+
+                    <!-- Clé API -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Clé API</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="text" id="detail-cle-api" readonly style="background-color: #f8f9fa; cursor: not-allowed; font-family: monospace;" class="small">
+                        </div>
+                    </div>
+
+                    <!-- Site Web (URL) -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">URL du site web de l'agence</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-link"></i>
+                            <div class="w-100 d-flex align-items-center ps-2 pe-3" style="min-height: 38px; background-color: #f8f9fa;">
+                                <a href="#" target="_blank" id="detail-url" class="text-decoration-none text-break small">—</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Adresse -->
+                    <div class="col-12">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Adresse / Localisation</label>
+                        <div class="input-group-custom" style="align-items: flex-start;">
+                            <i class="fa-solid fa-location-dot" style="margin-top: 10px;"></i>
+                            <textarea id="detail-adresse" rows="2" readonly style="resize: none; background-color: #f8f9fa; cursor: not-allowed;"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Statut -->
+                    <div class="col-md-12">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Statut Actuel</label>
+                        <div class="input-group-custom">
+                            <!-- <i class="fa-solid fa-toggle-on"></i> -->
+                            <div class="w-100 d-flex align-items-center ps-2" id="detail-statut-container" style="min-height: 38px; background-color: #f8f9fa;">
+                                <span id="detail-statut"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistiques associées -->
+                    <div class="col-md-6 mt-3">
+                        <div class="p-3 border rounded bg-light text-center">
+                            <span class="text-muted small fw-semibold text-uppercase d-block mb-1">
+                                <i class="fa-solid fa-file-contract me-1"></i>Souscriptions
+                            </span>
+                            <h4 class="mb-0 fw-bold text-dark" id="detail-subscriptions-count">0</h4>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 mt-3">
+                        <div class="p-3 border rounded bg-light text-center">
+                            <span class="text-muted small fw-semibold text-uppercase d-block mb-1">
+                                <i class="fa-solid fa-ticket me-1"></i>Tickets Support
+                            </span>
+                            <h4 class="mb-0 fw-bold text-dark" id="detail-tickets-count">0</h4>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-custom-outline" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -332,6 +469,56 @@
         @if($errors->any())
         $('#createAgencyModal').modal('show');
         @endif
+    });
+
+    $(document).on('click', '.btn-show-agence', function() {
+        let agenceId = $(this).data('id');
+        let url = "{{ route('agencies.show', ':id') }}".replace(':id', agenceId);
+
+        // Requête AJAX pour récupérer les données de l'agence
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                // Titre du modal (élément <span> classique -> .text())
+                $('#detail-nom-title').text(data.nom ?? '—');
+
+                // Inputs et Textarea -> utiliser .val()
+                $('#detail-nom').val(data.nom ?? '—');
+                $('#detail-code').val(data.code_agence ?? '—');
+                $('#detail-cle-api').val(data.cle_api ?? 'Non générée');
+                $('#detail-email').val(data.email ?? '—');
+                $('#detail-telephone').val(data.telephone ?? '—');
+                $('#detail-responsable').val(data.responsable ?? '—');
+                $('#detail-ville').val(data.ville ?? '—');
+                $('#detail-adresse').val(data.adresse ?? '—');
+
+                // URL
+                if (data.url) {
+                    $('#detail-url').attr('href', data.url).text(data.url);
+                } else {
+                    $('#detail-url').removeAttr('href').text('—');
+                }
+
+                // Statut avec badge (élément <span> classique -> .html())
+                if (parseInt(data.statut) === 1) {
+                    $('#detail-statut').html('<span class="badge bg-success"><i class="fa-solid fa-circle-check me-1"></i>Active</span>');
+                } else {
+                    $('#detail-statut').html('<span class="badge bg-danger"><i class="fa-solid fa-circle-xmark me-1"></i>Inactive</span>');
+                }
+
+                // Nombre de souscriptions et tickets (éléments <h4>/<span> -> .text())
+                $('#detail-subscriptions-count').text(data.soubscriptions_count ?? 0);
+                $('#detail-tickets-count').text(data.tickets_count ?? 0);
+
+                // Ouverture du modal
+                $('#showAgencyModal').modal('show');
+            },
+            error: function() {
+                alert("Impossible de charger les détails de l'agence.");
+            }
+        });
     });
 </script>
 @endpush

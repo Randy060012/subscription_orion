@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
+            $table->string('code')->unique();
+            $table->integer('agence_id');
+            $table->enum('type_demande', ['bug', 'amelioration', 'nouveau_module', 'formation']);
+            $table->string('nom_demandeur')->nullable();
+            $table->enum('priorite', ['basse', 'moyenne', 'haute', 'urgente'])->default('moyenne');
+            $table->string('sujet');
+            $table->text('description');
+            $table->string('piece_jointe')->nullable();
+            $table->enum('statut', ['ouvert', 'en_cours', 'resolu', 'ferme'])->default('ouvert');
             $table->timestamps();
         });
     }

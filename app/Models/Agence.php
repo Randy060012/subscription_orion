@@ -25,6 +25,11 @@ class Agence extends Model
 
     public function soubscriptions()
     {
-        return $this->hasMany(Soubscription::class, 'agence_id');
+        return $this->hasMany(Soubscription::class);
+    }
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
     }
 }

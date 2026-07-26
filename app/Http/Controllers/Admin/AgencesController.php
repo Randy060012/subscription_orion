@@ -55,7 +55,7 @@ class AgencesController extends Controller
             // 2. Création directe de l'agence
             Agence::create([
                 'code_agence' => $agenceCode,
-                'cle_api' => $apiKey,   
+                'cle_api' => $apiKey,
                 'url' => $request->url,
                 'nom' => $request->nom,
                 'email' => $request->email,
@@ -81,6 +81,9 @@ class AgencesController extends Controller
     public function show(string $id)
     {
         //
+        $agence = Agence::withCount(['soubscriptions', 'tickets'])->findOrFail($id);
+
+        return response()->json($agence);
     }
 
     /**

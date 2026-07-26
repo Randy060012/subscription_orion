@@ -10,6 +10,7 @@ Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::get('/agences', [AgencesController::class, 'index'])->name('index.agences');
 Route::post('/agences', [AgencesController::class, 'store'])->name('agencies.store');
+Route::get('/agences/{id}', [AgencesController::class, 'show'])->name('agencies.show');
 
 Route::get('/tarifs', [TarifsController::class, 'index'])->name('index.tarifs');
 Route::post('/tarifs', [TarifsController::class, 'store'])->name('tarifs.store');

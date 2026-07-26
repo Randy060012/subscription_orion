@@ -40,6 +40,7 @@ class AgencesController extends Controller
             'city' => 'nullable|string|max:255',
             'agence_manager' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
+            'url' => 'nullable|url|max:255',
             'status' => 'nullable|boolean',
         ]);
 
@@ -48,9 +49,14 @@ class AgencesController extends Controller
             // Génération du code : 'AGE' + '-' + 12 caractères aléatoires majuscules = 16 caractères au total
             $agenceCode = 'AGE-' . strtoupper(Str::random(12));
 
+            // Génération de la clé API de 16 caractères
+            $apiKey = \Illuminate\Support\Str::random(16);
+
             // 2. Création directe de l'agence
             Agence::create([
                 'agence_code' => $agenceCode,
+                'api_key' => $apiKey,   
+                'url' => $request->url,
                 'name' => $request->name,
                 'email' => $request->email,
                 'phone' => $request->phone,

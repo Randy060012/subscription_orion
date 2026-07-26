@@ -261,6 +261,15 @@
                             @error('agence_manager') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
                         </div>
 
+                        <div class="col-md-12">
+                            <label for="url" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">URL du site web de l'agence</label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-link"></i>
+                                <input type="url" id="url" name="url" placeholder="https://www.exemple.com" value="{{ old('url') }}">
+                            </div>
+                            @error('url') <small class="text-danger mt-1 d-block"><i class="fa-solid fa-triangle-exclamation me-1"></i>{{ $message }}</small> @enderror
+                        </div>
+
                         <!-- Adresse -->
                         <div class="col-12">
                             <label for="address" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Adresse / Localisation</label>
@@ -320,8 +329,8 @@
         });
 
         // Réouverture automatique de la modal en cas d'erreur de validation
-        @if ($errors->any())
-            $('#createAgencyModal').modal('show');
+        @if($errors->any())
+        $('#createAgencyModal').modal('show');
         @endif
     });
 </script>

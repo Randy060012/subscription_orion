@@ -243,7 +243,7 @@
 
                         <!-- Période d'essai -->
                         <div class="col-md-6">
-                            <label for="trial_period_days" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Période d'essai (Jours)</label>
+                            <label for="trial_period_days" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Duree (Jours)</label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-calendar-day"></i>
                                 <input type="number" id="trial_period_days" name="trial_period_days" placeholder="Ex: 14" value="{{ old('trial_period_days', 0) }}">

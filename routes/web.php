@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AgencesController;
 use App\Http\Controllers\Admin\TarifsController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SoubscriptionController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -13,9 +14,9 @@ Route::post('/agences', [AgencesController::class, 'store'])->name('agencies.sto
 Route::get('/tarifs', [TarifsController::class, 'index'])->name('index.tarifs');
 Route::post('/tarifs', [TarifsController::class, 'store'])->name('tarifs.store');
 
-Route::get('/subscriptions', function () {
-    return view('pages/subscriptions/index');
-})->name('index.subscriptions');
+Route::get('/subscriptions', [SoubscriptionController::class, 'index'])->name('index.subscriptions');
+Route::post('/subscriptions', [SoubscriptionController::class, 'store'])->name('subscriptions.store');
+
 
 Route::get('/tickets', function () {
     return view('pages/tickets/index');

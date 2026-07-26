@@ -12,6 +12,8 @@ class Agence extends Model
     protected $fillable =
     [
         'agence_code',
+        'api_key',
+        'url',
         'name',
         'email',
         'phone',
@@ -20,4 +22,9 @@ class Agence extends Model
         'address',
         'status'
     ];
+
+    public function soubscriptions()
+    {
+        return $this->hasMany(Soubscription::class, 'agence_id');
+    }
 }

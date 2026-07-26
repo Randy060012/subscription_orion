@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Agence;
-use App\Models\Subscription;
+use App\Models\Soubscription;
 use App\Models\Tarif;
 use App\Models\Ticket;
 use Illuminate\Support\Carbon;
@@ -26,8 +26,8 @@ class DashboardController extends Controller
         $agencesInactives = Agence::where('status', 0)->count();
 
         // Souscriptions
-        $totalSubscriptions     = Subscription::count();
-        $subscriptionsThisMonth = Subscription::whereMonth('created_at', now()->month)
+        $totalSubscriptions     = Soubscription::count();
+        $subscriptionsThisMonth = Soubscription::whereMonth('created_at', now()->month)
             ->whereYear('created_at', now()->year)
             ->count();
 
@@ -51,11 +51,11 @@ class DashboardController extends Controller
         $subData2025 = [];
 
         for ($i = 1; $i <= 7; $i++) { // Janvier à Juillet
-            $subData2026[] = Subscription::whereMonth('created_at', $i)
+            $subData2026[] = Soubscription::whereMonth('created_at', $i)
                 ->whereYear('created_at', 2026)
                 ->count();
 
-            $subData2025[] = Subscription::whereMonth('created_at', $i)
+            $subData2025[] = Soubscription::whereMonth('created_at', $i)
                 ->whereYear('created_at', 2025)
                 ->count();
         }
@@ -84,7 +84,7 @@ class DashboardController extends Controller
             ];
         });
 
-        $recentSubscriptions = Subscription::latest()->take(3)->get()->map(function ($s) {
+        $recentSubscriptions = Soubscription::latest()->take(3)->get()->map(function ($s) {
             return (object) [
                 'type'       => 'subscription',
                 'icon'       => 'file-invoice',

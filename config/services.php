@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'afriksms' => [
+        'api_key' => env('AFRIKSMS_API_KEY'),
+        'client_id' => env('AFRIKSMS_CLIENT_ID'),
+        'sender_id' => env('AFRIKSMS_SENDER_ID'),
+    ],
+
 ];

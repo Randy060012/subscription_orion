@@ -8,6 +8,8 @@ use App\Models\Soubscription;
 use App\Models\Tarif;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SoubscriptionController extends Controller
 {
@@ -60,21 +62,21 @@ class SoubscriptionController extends Controller
      */
     public function store(Request $request)
     {
-        //
         $request->validate([
             'agence_id' => 'required|exists:agences,id',
             'tarif_id'  => 'required|exists:tarifs,id',
-            // 'date_debut' => 'required|date',
             'status'    => 'nullable|boolean',
         ]);
 
         try {
             $tarif = Tarif::findOrFail($request->tarif_id);
+            $agence = Agence::findOrFail($request->agence_id);
 
             $dateDebut = Carbon::now();
             $dateFin   = $dateDebut->copy()->addDays((int) $tarif->duree_jours);
 
-            Soubscription::create([
+            // Création de la souscription
+            $soubscription = Soubscription::create([
                 'agence_id'  => $request->agence_id,
                 'tarif_id'   => $request->tarif_id,
                 'date_debut' => $dateDebut->format('Y-m-d'),
@@ -82,11 +84,89 @@ class SoubscriptionController extends Controller
                 'status'     => $request->has('status') ? $request->status : 1,
             ]);
 
-            return redirect()->back()->with('success', 'Soubscription créé avec succès.');
+            // Envoi du SMS de confirmation au client
+            $this->sendSubscriptionConfirmation($agence, $tarif, $dateDebut, $dateFin);
+
+            return redirect()->back()->with('success', 'Souscription créé avec succès. Un SMS de confirmation a été envoyé.');
         } catch (\Throwable $e) {
+            Log::error('Erreur lors de la création de souscription : ' . $e->getMessage());
+
             return redirect()->back()
                 ->withInput()
                 ->with('error', 'Une erreur est survenue : ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Envoie un SMS de confirmation de souscription au client
+     */
+    private function sendSubscriptionConfirmation($agence, $tarif, $dateDebut, $dateFin)
+    {
+        try {
+            // Récupérer le numéro de téléphone de l'agence
+            $telephone = $agence->telephone;
+
+            if (empty($telephone)) {
+                Log::warning('Téléphone de l\'agence non disponible pour l\'envoi du SMS', ['agence_id' => $agence->id]);
+                return;
+            }
+
+            // Nettoyer le numéro de téléphone
+            $telephoneClean = preg_replace('/[^0-9+]/', '', $telephone);
+
+            // Formater les dates pour le message
+            $dateDebutFormatted = Carbon::parse($dateDebut)->format('d/m/Y');
+            $dateFinFormatted = Carbon::parse($dateFin)->format('d/m/Y');
+            $montant = number_format($tarif->montant, 0, ',', ' ') . ' FCFA';
+
+            // Construire le message
+            $message = "ASSURIA PRO - CONFIRMATION DE SOUSCRIPTION\n\n";
+            $message .= "Cher(e) client(e),\n\n";
+            $message .= "Votre souscription au forfait \"{$tarif->nom}\" a été enregistrée avec succès.\n\n";
+            $message .= "Détails de votre abonnement :\n";
+            $message .= "• Forfait : {$tarif->nom}\n";
+            $message .= "• Montant : {$montant}\n";
+            $message .= "• Date de début : {$dateDebutFormatted}\n";
+            $message .= "• Date de fin : {$dateFinFormatted}\n";
+            $message .= "• Durée : {$tarif->duree_jours} jours\n\n";
+
+            if ($tarif->description) {
+                $message .= "Description : {$tarif->description}\n\n";
+            }
+
+            $message .= "Votre agence est maintenant active sur Assuria Pro.\n";
+            $message .= "Connectez-vous pour gérer vos opérations.\n\n";
+            $message .= "Merci de votre confiance !\n";
+            $message .= "L'équipe Assuria Pro";
+
+            // Envoi du SMS via l'API AfricSMS
+            $response = Http::asMultipart()->post(
+                'https://api.afriksms.com/api/web/web_v1/outbounds/send_multisms',
+                [
+                    ['name' => 'ApiKey', 'contents' => config('services.afriksms.api_key')],
+                    ['name' => 'ClientId', 'contents' => config('services.afriksms.client_id')],
+                    ['name' => 'SenderId', 'contents' => config('services.afriksms.sender_id')],
+                    ['name' => 'Message', 'contents' => $message],
+                    ['name' => 'MobileNumbers', 'contents' => '228'.$telephoneClean],
+                ]
+            );
+
+            if ($response->successful()) {
+                Log::info('SMS de confirmation de souscription envoyé avec succès', [
+                    'agence_id' => $agence->id,
+                    'telephone' => $telephoneClean,
+                    'tarif' => $tarif->nom
+                ]);
+            } else {
+                Log::error('Échec de l\'envoi du SMS de confirmation', [
+                    'agence_id' => $agence->id,
+                    'response' => $response->body()
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de l\'envoi du SMS de confirmation : ' . $e->getMessage(), [
+                'agence_id' => $agence->id ?? null
+            ]);
         }
     }
 

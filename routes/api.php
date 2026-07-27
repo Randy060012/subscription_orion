@@ -13,7 +13,11 @@ Route::get('/user', function (Request $request) {
 
 Route::middleware([AuthenticateAgenceApi::class])->group(function () {
     Route::post('/v1/subscription/check', [SubscriptionCheckController::class, 'checkStatus']);
+
+    Route::post('/v1/subscription/verify-agency', [SubscriptionCheckController::class, 'verifyAgency']);
 });
+
+
 
 Route::middleware([CheckAgenceHeaderForTicket::class])->prefix('v1/agence')->group(function () {
     // Création d'un ticket

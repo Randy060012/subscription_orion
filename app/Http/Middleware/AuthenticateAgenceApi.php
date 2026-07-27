@@ -12,12 +12,12 @@ class AuthenticateAgenceApi
     public function handle(Request $request, Closure $next)
     {
         // 1. Récupération des paramètres (soit dans les Headers, soit dans le Body JSON/Query)
-        $apiKey = $request->header('X-API-KEY') ?? $request->input('cle_api');
+        //$apiKey = $request->header('X-API-KEY') ?? $request->input('cle_api');
         $agenceCode = $request->header('X-AGENCE-CODE') ?? $request->input('code_agence');
         $agenceUrl = $request->header('X-AGENCE-URL') ?? $request->input('agence_url');
 
         // Validation de la présence des champs requis
-        if (!$apiKey || !$agenceCode || !$agenceUrl) {
+        if (/*!$apiKey ||*/ !$agenceCode || !$agenceUrl) {
             return response()->json([
                 'success' => false,
                 'message' => 'Paramètres d\'authentification manquants (cle_api, code_agence, agence_url requis).'
@@ -28,8 +28,8 @@ class AuthenticateAgenceApi
         $cleanUrl = parse_url($agenceUrl, PHP_URL_HOST) ?? $agenceUrl;
 
         // 3. Recherche de l'agence correspondante
-        $agence = Agence::where('cle_api', $apiKey)
-            ->where('code_agence', $agenceCode)
+        $agence = Agence::where('code_agence', $agenceCode)
+            //->where('cle_api', $apiKey)
             ->get()
             ->filter(function ($a) use ($cleanUrl) {
                 // On vérifie si l'URL renseignée correspond à l'agence enregistrée

@@ -62,32 +62,37 @@ class SoubscriptionController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'agence_id' => 'required|exists:agences,id',
-            'tarif_id'  => 'required|exists:tarifs,id',
-            'status'    => 'nullable|boolean',
+        // 1. Validation avec prise en compte des nouvelles dates
+        $validated = $request->validate([
+            'agence_id'  => 'required|exists:agences,id',
+            'tarif_id'   => 'required|exists:tarifs,id',
+            'date_debut' => 'required|date',
+            'date_fin'   => 'required|date|after_or_equal:date_debut',
+            'status'     => 'nullable|boolean',
         ]);
 
         try {
-            $tarif = Tarif::findOrFail($request->tarif_id);
-            $agence = Agence::findOrFail($request->agence_id);
+            // Conversion en objets Carbon pour la manipulation
+            $dateDebut = Carbon::parse($request->date_debut);
+            $dateFin   = Carbon::parse($request->date_fin);
 
-            $dateDebut = Carbon::now();
-            $dateFin   = $dateDebut->copy()->addDays((int) $tarif->duree_jours);
-
-            // Création de la souscription
+            // 2. Création de la souscription avec les dates choisies
             $soubscription = Soubscription::create([
                 'agence_id'  => $request->agence_id,
                 'tarif_id'   => $request->tarif_id,
-                'date_debut' => $dateDebut->format('Y-m-d'),
-                'date_fin'   => $dateFin->format('Y-m-d'),
-                'status'     => $request->has('status') ? $request->status : 1,
+                'date_debut' => $dateDebut,
+                'date_fin'   => $dateFin,
+                'status'     => $request->boolean('status', true),
             ]);
 
-            // Envoi du SMS de confirmation au client
+            // 3. Récupération des relations pour le SMS (si besoin des objets complets)
+            $agence = $soubscription->agence;
+            $tarif  = $soubscription->tarif;
+
+            // Envoi du SMS de confirmation
             $this->sendSubscriptionConfirmation($agence, $tarif, $dateDebut, $dateFin);
 
-            return redirect()->back()->with('success', 'Souscription créé avec succès. Un SMS de confirmation a été envoyé.');
+            return redirect()->back()->with('success', 'Souscription créée avec succès. Un SMS de confirmation a été envoyé.');
         } catch (\Throwable $e) {
             Log::error('Erreur lors de la création de souscription : ' . $e->getMessage());
 
@@ -96,7 +101,6 @@ class SoubscriptionController extends Controller
                 ->with('error', 'Une erreur est survenue : ' . $e->getMessage());
         }
     }
-
     /**
      * Envoie un SMS de confirmation de souscription au client
      */
@@ -147,7 +151,7 @@ class SoubscriptionController extends Controller
                     ['name' => 'ClientId', 'contents' => config('services.afriksms.client_id')],
                     ['name' => 'SenderId', 'contents' => config('services.afriksms.sender_id')],
                     ['name' => 'Message', 'contents' => $message],
-                    ['name' => 'MobileNumbers', 'contents' => '228'.$telephoneClean],
+                    ['name' => 'MobileNumbers', 'contents' => '228' . $telephoneClean],
                 ]
             );
 

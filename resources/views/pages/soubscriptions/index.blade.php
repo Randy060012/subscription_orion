@@ -258,25 +258,25 @@
                             </div>
                         </div>
 
-                        <!-- Date de Début (Aujourd'hui) -->
+                        <!-- Date de Début (Manuelle) -->
                         <div class="col-md-6">
                             <label for="date_debut" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">
-                                Date de début (Aujourd'hui)
+                                Date de début <span class="text-danger">*</span>
                             </label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-calendar"></i>
-                                <input type="date" id="date_debut" readonly class="bg-light" value="{{ date('Y-m-d') }}">
+                                <input type="date" id="date_debut" name="date_debut" required class="form-control" value="{{ old('date_debut', date('Y-m-d')) }}">
                             </div>
                         </div>
 
-                        <!-- Date de Fin (Calculée) -->
+                        <!-- Date de Fin (Calculée automatiquement ou modifiable) -->
                         <div class="col-md-6">
                             <label for="date_fin" class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">
-                                Date de fin d'abonnement
+                                Date de fin d'abonnement <span class="text-danger">*</span>
                             </label>
                             <div class="input-group-custom">
                                 <i class="fa-solid fa-calendar-check"></i>
-                                <input type="date" id="date_fin" readonly class="bg-light" placeholder="Calcul automatique...">
+                                <input type="date" id="date_fin" name="date_fin" required class="form-control" value="{{ old('date_fin') }}" placeholder="Calcul automatique...">
                             </div>
                         </div>
 
@@ -333,33 +333,36 @@
         const dateDebutInput = document.getElementById('date_debut');
         const dateFinInput = document.getElementById('date_fin');
 
-        function updateDates() {
+        function calculateEndDate() {
             const selectedOption = tarifSelect.options[tarifSelect.selectedIndex];
             const days = parseInt(selectedOption ? selectedOption.getAttribute('data-days') : 0);
+            const startDateValue = dateDebutInput.value;
 
-            if (days > 0) {
-                const startDate = new Date(); // Date courante
+            if (days > 0 && startDateValue) {
+                // Création de la date en local pour éviter les décalages de fuseau horaire UTC
+                const parts = startDateValue.split('-');
+                const startDate = new Date(parts[0], parts[1] - 1, parts[2]);
 
-                // Format Début (YYYY-MM-DD)
-                const dYear = startDate.getFullYear();
-                const dMonth = String(startDate.getMonth() + 1).padStart(2, '0');
-                const dDay = String(startDate.getDate()).padStart(2, '0');
-                dateDebutInput.value = `${dYear}-${dMonth}-${dDay}`;
+                // Ajout des jours
+                startDate.setDate(startDate.getDate() + days);
 
-                // Calcul de la Date de Fin
-                const endDate = new Date(startDate);
-                endDate.setDate(endDate.getDate() + days);
+                // Formatage YYYY-MM-DD
+                const year = startDate.getFullYear();
+                const month = String(startDate.getMonth() + 1).padStart(2, '0');
+                const day = String(startDate.getDate()).padStart(2, '0');
 
-                const fYear = endDate.getFullYear();
-                const fMonth = String(endDate.getMonth() + 1).padStart(2, '0');
-                const fDay = String(endDate.getDate()).padStart(2, '0');
-
-                dateFinInput.value = `${fYear}-${fMonth}-${fDay}`;
+                dateFinInput.value = `${year}-${month}-${day}`;
             }
         }
 
-        tarifSelect.addEventListener('change', updateDates);
-        updateDates(); // Exécution au chargement
+        // Déclencher le calcul automatique au changement de tarif ou de date de début
+        tarifSelect.addEventListener('change', calculateEndDate);
+        dateDebutInput.addEventListener('change', calculateEndDate);
+
+        // Exécution initiale uniquement si la date de fin n'est pas déjà pré-remplie (ex: retour d'erreur Laravel)
+        if (!dateFinInput.value) {
+            calculateEndDate();
+        }
     });
 </script>
 @endpush

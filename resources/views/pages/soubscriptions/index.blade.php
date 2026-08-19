@@ -187,11 +187,36 @@
                                 <span class="badge bg-secondary">Inactif</span>
                                 @endif
                             </td>
-                            <td class="text-end text-nowrap">
+                            <!-- <td class="text-end text-nowrap">
                                 <div class="action-btns">
                                     <button class="btn btn-sm btn-outline-secondary" title="Voir"><i class="fa-solid fa-eye"></i></button>
                                     <button class="btn btn-sm btn-outline-primary" title="Modifier"><i class="fa-solid fa-pen"></i></button>
                                     <button class="btn btn-sm btn-outline-danger" title="Annuler"><i class="fa-solid fa-ban"></i></button>
+                                </div>
+                            </td> -->
+                            <td class="text-end text-nowrap">
+                                <div class="action-btns">
+                                    <!-- Bouton Voir -->
+                                    <button class="btn btn-sm btn-outline-secondary btn-show-subscription"
+                                        data-id="{{ $soubscription->id }}"
+                                        title="Voir">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+
+                                    <!-- Bouton Désactiver -->
+                                    @if($soubscription->status)
+                                    <form action="{{ route('subscriptions.desactiver', $soubscription->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir désactiver cet abonnement ?');">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Désactiver">
+                                            <i class="fa-solid fa-ban"></i>
+                                        </button>
+                                    </form>
+                                    @else
+                                    <button class="btn btn-sm btn-outline-secondary" disabled title="Déjà inactif">
+                                        <i class="fa-solid fa-ban"></i>
+                                    </button>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -294,6 +319,95 @@
     </div>
 </div>
 
+<!-- MODAL DETAILS DE SOUSCRIPTION (SHOW) -->
+<div class="modal fade" id="showSubscriptionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #212529;">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa-solid fa-eye me-2" style="color: #fff;"></i>Détails de l'Abonnement #<span id="show-sub-id"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <!-- Agence / Client -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Agence / Client</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-building"></i>
+                            <input type="text" id="show_agence" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Contact Agence -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Téléphone / Email</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-phone"></i>
+                            <input type="text" id="show_contact" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Forfait -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Forfait Souscrit</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-tag"></i>
+                            <input type="text" id="show_tarif" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Prix du Tarif -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Prix du Forfait</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-money-bill"></i>
+                            <input type="text" id="show_prix" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Date de Début -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Date de Début</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-calendar"></i>
+                            <input type="text" id="show_date_debut" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Date de Fin -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Date d'Échéance</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-calendar-check"></i>
+                            <input type="text" id="show_date_fin" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Statut -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Statut Actuel</label>
+                        <div class="pt-1" id="show_statut_container"></div>
+                    </div>
+
+                    <!-- Date d'enregistrement -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Date d'Enregistrement</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-clock"></i>
+                            <input type="text" id="show_created_at" readonly class="bg-light">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-custom-outline" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -321,9 +435,47 @@
             ]
         });
 
-        @if($errors->any())
+        @if($errors -> any())
         $('#createSubscriptionModal').modal('show');
         @endif
+    });
+
+    // AFFICHER DÉTAILS DE LA SOUSCRIPTION (SHOW)
+    $(document).on('click', '.btn-show-subscription', function() {
+        let subId = $(this).data('id');
+        let url = "{{ route('subscriptions.show', ':id') }}".replace(':id', subId);
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#show-sub-id').text(data.id);
+                $('#show_agence').val(data.agence_nom);
+                $('#show_contact').val(data.agence_tel + ' | ' + data.agence_email);
+                $('#show_tarif').val(data.tarif_nom);
+                $('#show_prix').val(data.tarif_prix);
+                $('#show_date_debut').val(data.date_debut);
+                $('#show_date_fin').val(data.date_fin);
+                $('#show_created_at').val(data.created_at);
+
+                // Gestion du Badge de Statut
+                let statusHtml = '';
+                if (data.status_label === 'actif') {
+                    statusHtml = '<span class="badge bg-success"><i class="fa-solid fa-circle-check me-1"></i>Actif</span>';
+                } else if (data.status_label === 'expire') {
+                    statusHtml = '<span class="badge bg-danger"><i class="fa-solid fa-hourglass-end me-1"></i>Expiré</span>';
+                } else {
+                    statusHtml = '<span class="badge bg-secondary"><i class="fa-solid fa-circle-xmark me-1"></i>Inactif</span>';
+                }
+                $('#show_statut_container').html(statusHtml);
+
+                $('#showSubscriptionModal').modal('show');
+            },
+            error: function() {
+                alert("Erreur lors de la récupération des détails de l'abonnement.");
+            }
+        });
     });
 </script>
 

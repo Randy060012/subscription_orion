@@ -162,7 +162,7 @@
                             <td><strong>{{ $loop->iteration }}</strong></td>
                             <td>
                                 <div class="fw-bold text-primary">{{ $plan->nom }}</div>
-                                <span class="text-muted small">{{ Str::limit($plan->description, 40) }}</span>
+                                <!-- <span class="text-muted small">{{ Str::limit($plan->description, 40) }}</span> -->
                             </td>
                             <td><span class="badge bg-light text-dark border">{{ ucfirst($plan->frequence_facturation) }}</span></td>
                             <td class="fw-bold text-orion-dark">{{ number_format($plan->prix, 0, ',', ' ') }} FCFA <small class="text-muted">/{{ $plan->frequence_facturation == 'annuel' ? 'an' : 'mois' }}</small></td>
@@ -179,9 +179,15 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                <button class="btn btn-sm btn-outline-secondary me-1" title="Voir détails"><i class="fa-solid fa-eye"></i></button>
-                                <button class="btn btn-sm btn-outline-primary me-1" title="Modifier"><i class="fa-solid fa-pen"></i></button>
-                                <button class="btn btn-sm btn-outline-danger" title="Désactiver / Supprimer"><i class="fa-solid fa-trash"></i></button>
+                                <button class="btn btn-sm btn-outline-secondary me-1 btn-show-plan" data-id="{{ $plan->id }}" title="Voir détails">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary me-1 btn-edit-plan" data-id="{{ $plan->id }}" title="Modifier">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger btn-delete-plan" data-id="{{ $plan->id }}" title="Supprimer">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
                             </td>
                         </tr>
                         @endforeach
@@ -299,6 +305,214 @@
     </div>
 </div>
 
+<!-- MODAL DETAILS DE PLAN (SHOW) -->
+<div class="modal fade" id="showPlanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #212529;">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa-solid fa-eye me-2" style="color: #fff;"></i>Détails du Plan : <span id="show-plan-title"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row g-3">
+                    <!-- Nom du Plan -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nom du Plan</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-tag"></i>
+                            <input type="text" id="show_nom" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Fréquence de Facturation -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Fréquence de Facturation</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-clock"></i>
+                            <input type="text" id="show_frequence" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Prix -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Prix du Tarif (FCFA)</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-money-bill"></i>
+                            <input type="text" id="show_prix" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Période -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Durée (Jours)</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-calendar-day"></i>
+                            <input type="text" id="show_duree" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Nombre d'agences -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Agences autorisées</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-building"></i>
+                            <input type="text" id="show_max_agences" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Nombre max d'utilisateurs -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Max utilisateurs</label>
+                        <div class="input-group-custom">
+                            <i class="fa-solid fa-users"></i>
+                            <input type="text" id="show_max_utilisateurs" readonly class="bg-light">
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="col-12">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Description / Avantages inclus</label>
+                        <div class="input-group-custom" style="align-items: flex-start;">
+                            <i class="fa-solid fa-align-left" style="margin-top: 10px;"></i>
+                            <textarea id="show_description" rows="3" readonly class="bg-light" style="resize: vertical;"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Statut -->
+                    <div class="col-12">
+                        <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Statut</label>
+                        <div class="pt-1" id="show_statut_container"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-custom-outline" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MODIFICATION DE PLAN (UPDATE) -->
+<div class="modal fade" id="editPlanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #212529;">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa-solid fa-pen-to-square me-2" style="color: #fff;"></i>Modifier le Plan : <span id="edit-plan-title"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editPlanForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nom du Plan <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-tag"></i>
+                                <input type="text" id="edit_nom" name="nom" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Fréquence de Facturation <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-clock"></i>
+                                <select id="edit_frequence_facturation" name="frequence_facturation" required>
+                                    <option value="mensuel">Mensuelle</option>
+                                    <option value="trimestriel">Trimestrielle</option>
+                                    <option value="annuel">Annuelle</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Prix du Tarif (FCFA) <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-money-bill"></i>
+                                <input type="number" id="edit_prix" name="prix" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Durée (Jours)</label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-calendar-day"></i>
+                                <input type="number" id="edit_duree_jours" name="duree_jours">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Agences autorisées <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-building"></i>
+                                <input type="number" id="edit_max_agences" name="max_agences" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Max utilisateurs <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-users"></i>
+                                <input type="number" id="edit_max_utilisateurs" name="max_utilisateurs" required>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Description</label>
+                            <div class="input-group-custom" style="align-items: flex-start;">
+                                <i class="fa-solid fa-align-left" style="margin-top: 10px;"></i>
+                                <textarea id="edit_description" name="description" rows="3" style="resize: vertical;"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="edit_est_actif" name="est_actif" value="1">
+                                <label class="form-check-label fw-semibold" style="font-size: 0.85rem; color: #495057;" for="edit_est_actif">Rendre ce plan disponible immédiatement</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-custom-outline" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-1"></i> Mettre à jour</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SUPPRESSION DE PLAN (DELETE) -->
+<div class="modal fade" id="deletePlanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>Confirmer la suppression
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="deletePlanForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-body p-4 text-center">
+                    <i class="fa-solid fa-layer-group text-danger fa-3x mb-3"></i>
+                    <p class="mb-1">Êtes-vous sûr de vouloir supprimer le plan <strong id="delete-plan-nom"></strong> ?</p>
+                    <small class="text-muted">Cette action est irréversible.</small>
+                </div>
+                <div class="modal-footer bg-light justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash me-1"></i> Supprimer définitivement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -322,9 +536,131 @@
             }]
         });
 
-        @if($errors->any())
+        @if($errors -> any())
         $('#createPlanModal').modal('show');
         @endif
+
+
+        // 1. VOIR DÉTAILS (SHOW)
+        // $(document).on('click', '.btn-show-plan', function() {
+        //     let planId = $(this).data('id');
+        //     let showUrl = "{{ route('tarifs.show', ':id') }}".replace(':id', planId);
+
+        //     $.ajax({
+        //         url: showUrl,
+        //         type: 'GET',
+        //         dataType: 'json',
+        //         success: function(data) {
+        //             $('#show_nom').text(data.nom);
+        //             $('#show_frequence').text(data.frequence_facturation.toUpperCase());
+        //             $('#show_prix').text(new Intl.NumberFormat('fr-FR').format(data.prix) + ' FCFA');
+        //             $('#show_duree').text(data.duree_jours + ' jours');
+        //             $('#show_max_agences').text(data.max_agences == 0 ? 'Illimité' : data.max_agences);
+        //             $('#show_max_utilisateurs').text(data.max_utilisateurs == 0 ? 'Illimité' : data.max_utilisateurs);
+        //             $('#show_description').text(data.description ?? 'Aucune description spécifiée.');
+
+        //             if (data.est_actif) {
+        //                 $('#show_statut_badge').html('<span class="badge bg-success">Actif</span>');
+        //             } else {
+        //                 $('#show_statut_badge').html('<span class="badge bg-danger">Inactif</span>');
+        //             }
+
+        //             $('#showPlanModal').modal('show');
+        //         }
+        //     });
+        // });
+
+        // VOIR DÉTAILS (SHOW)
+        $(document).on('click', '.btn-show-plan', function() {
+            let planId = $(this).data('id');
+            let showUrl = "{{ route('tarifs.show', ':id') }}".replace(':id', planId);
+
+            $.ajax({
+                url: showUrl,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#show-plan-title').text(data.nom);
+                    $('#show_nom').val(data.nom ?? '');
+
+                    // Formatage fréquence
+                    let freq = data.frequence_facturation ?? '';
+                    if (freq === 'mensuel') freq = 'Mensuelle';
+                    else if (freq === 'trimestriel') freq = 'Trimestrielle';
+                    else if (freq === 'annuel') freq = 'Annuelle';
+                    $('#show_frequence').val(freq);
+
+                    // Formatage prix & durée
+                    $('#show_prix').val(new Intl.NumberFormat('fr-FR').format(data.prix) + ' FCFA');
+                    $('#show_duree').val((data.duree_jours ?? 0) + ' Jours');
+
+                    // Formatage limites
+                    $('#show_max_agences').val(data.max_agences == 0 ? 'Illimité' : data.max_agences);
+                    $('#show_max_utilisateurs').val(data.max_utilisateurs == 0 ? 'Illimité' : data.max_utilisateurs);
+
+                    $('#show_description').val(data.description ?? 'Aucune description spécifiée.');
+
+                    // Affichage du statut en badge
+                    if (data.est_actif) {
+                        $('#show_statut_container').html('<span class="badge bg-success"><i class="fa-solid fa-circle-check me-1"></i>Actif</span>');
+                    } else {
+                        $('#show_statut_container').html('<span class="badge bg-danger"><i class="fa-solid fa-circle-xmark me-1"></i>Inactif</span>');
+                    }
+
+                    $('#showPlanModal').modal('show');
+                },
+                error: function() {
+                    alert("Impossible de charger les détails du plan.");
+                }
+            });
+        });
+
+        // 2. ÉDITION DE PLAN (EDIT)
+        $(document).on('click', '.btn-edit-plan', function() {
+            let planId = $(this).data('id');
+            let showUrl = "{{ route('tarifs.show', ':id') }}".replace(':id', planId);
+            let updateUrl = "{{ route('tarifs.update', ':id') }}".replace(':id', planId);
+
+            $('#editPlanForm').attr('action', updateUrl);
+
+            $.ajax({
+                url: showUrl,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#edit-plan-title').text(data.nom);
+                    $('#edit_nom').val(data.nom);
+                    $('#edit_frequence_facturation').val(data.frequence_facturation);
+                    $('#edit_prix').val(data.prix);
+                    $('#edit_duree_jours').val(data.duree_jours);
+                    $('#edit_max_agences').val(data.max_agences);
+                    $('#edit_max_utilisateurs').val(data.max_utilisateurs);
+                    $('#edit_description').val(data.description);
+                    $('#edit_est_actif').prop('checked', data.est_actif == 1);
+
+                    $('#editPlanModal').modal('show');
+                }
+            });
+        });
+
+        // 3. SUPPRESSION DE PLAN (DELETE)
+        $(document).on('click', '.btn-delete-plan', function() {
+            let planId = $(this).data('id');
+            let showUrl = "{{ route('tarifs.show', ':id') }}".replace(':id', planId);
+            let deleteUrl = "{{ route('tarifs.destroy', ':id') }}".replace(':id', planId);
+
+            $('#deletePlanForm').attr('action', deleteUrl);
+
+            $.ajax({
+                url: showUrl,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    $('#delete-plan-nom').text(data.nom);
+                    $('#deletePlanModal').modal('show');
+                }
+            });
+        });
     });
 </script>
 @endpush

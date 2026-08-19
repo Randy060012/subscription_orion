@@ -180,10 +180,12 @@
                                 <button class="btn btn-sm btn-outline-secondary me-1 btn-show-agence" data-id="{{ $agence->id }}" title="Voir les détails">
                                     <i class="fa-solid fa-eye"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-primary me-1" title="Modifier">
+
+                                <button class="btn btn-sm btn-outline-primary me-1 btn-edit-agence" data-id="{{ $agence->id }}" title="Modifier">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger" title="Supprimer">
+
+                                <button class="btn btn-sm btn-outline-danger btn-delete-agence" data-id="{{ $agence->id }}" title="Supprimer">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </td>
@@ -441,6 +443,125 @@
     </div>
 </div>
 
+<!-- MODAL MODIFICATION D'AGENCE -->
+<div class="modal fade" id="editAgencyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header text-white" style="background-color: #212529;">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa-solid fa-pen-to-square me-2" style="color: #fff;"></i>Modifier l'Agence : <span id="edit-agence-title"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="editAgencyForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Nom de l'agence <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-building"></i>
+                                <input type="text" id="edit_nom" name="nom" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Adresse Email <span class="text-danger">*</span></label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-envelope"></i>
+                                <input type="email" id="edit_email" name="email" required>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Téléphone</label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="text" id="edit_telephone" name="telephone">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Ville</label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <input type="text" id="edit_ville" name="ville">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Responsable de l'agence</label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-user"></i>
+                                <input type="text" id="edit_responsable" name="responsable">
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">URL du site web de l'agence</label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-link"></i>
+                                <input type="url" id="edit_url" name="url">
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Adresse / Localisation</label>
+                            <div class="input-group-custom" style="align-items: flex-start;">
+                                <i class="fa-solid fa-location-dot" style="margin-top: 10px;"></i>
+                                <textarea id="edit_adresse" name="adresse" rows="2" style="resize: vertical;"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-semibold" style="font-size: 0.85rem; color: #495057;">Statut</label>
+                            <div class="input-group-custom">
+                                <i class="fa-solid fa-toggle-on"></i>
+                                <select id="edit_statut" name="statut">
+                                    <option value="1">Active</option>
+                                    <option value="0">Inactive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-custom-outline" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk me-1"></i> Enregistrer les modifications</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SUPPRESSION D'AGENCE -->
+<div class="modal fade" id="deleteAgencyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>Confirmer la suppression
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="deleteAgencyForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="modal-body p-4 text-center">
+                    <i class="fa-solid fa-building-circle-xmark text-danger fa-3x mb-3"></i>
+                    <p class="mb-1">Êtes-vous sûr de vouloir supprimer l'agence <strong id="delete-agence-nom"></strong> ?</p>
+                    <small class="text-muted">Cette action est irréversible.</small>
+                </div>
+                <div class="modal-footer bg-light justify-content-center">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-trash me-1"></i> Supprimer définitivement</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -466,7 +587,7 @@
         });
 
         // Réouverture automatique de la modal en cas d'erreur de validation
-        @if($errors->any())
+        @if($errors -> any())
         $('#createAgencyModal').modal('show');
         @endif
     });
@@ -517,6 +638,63 @@
             },
             error: function() {
                 alert("Impossible de charger les détails de l'agence.");
+            }
+        });
+    });
+
+    // MODIFICATION : Chargement AJAX des données au clic
+    $(document).on('click', '.btn-edit-agence', function() {
+        let agenceId = $(this).data('id');
+        let showUrl = "{{ route('agencies.show', ':id') }}".replace(':id', agenceId);
+        let updateUrl = "{{ route('agencies.update', ':id') }}".replace(':id', agenceId);
+
+        // Définition de l'action du formulaire
+        $('#editAgencyForm').attr('action', updateUrl);
+
+        // Requête AJAX pour récupérer les données actuelles
+        $.ajax({
+            url: showUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#edit-agence-title').text(data.nom ?? '—');
+                $('#edit_nom').val(data.nom ?? '');
+                $('#edit_email').val(data.email ?? '');
+                $('#edit_telephone').val(data.telephone ?? '');
+                $('#edit_ville').val(data.ville ?? '');
+                $('#edit_responsable').val(data.responsable ?? '');
+                $('#edit_url').val(data.url ?? '');
+                $('#edit_adresse').val(data.adresse ?? '');
+                $('#edit_statut').val(data.statut ? 1 : 0);
+
+                $('#editAgencyModal').modal('show');
+            },
+            error: function() {
+                alert("Erreur lors de la récupération des données de l'agence.");
+            }
+        });
+    });
+
+    // SUPPRESSION : Récupération AJAX succincte ou confirmation simple
+    $(document).on('click', '.btn-delete-agence', function() {
+        let agenceId = $(this).data('id');
+        let showUrl = "{{ route('agencies.show', ':id') }}".replace(':id', agenceId);
+        let deleteUrl = "{{ route('agencies.destroy', ':id') }}".replace(':id', agenceId);
+
+        $('#deleteAgencyForm').attr('action', deleteUrl);
+
+        $.ajax({
+            url: showUrl,
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {
+                $('#delete-agence-nom').text(data.nom ?? 'cette agence');
+                $('#deleteAgencyModal').modal('show');
+            },
+            error: function() {
+                // Repli direct si la requête échoue
+                $('#delete-agence-nom').text('');
+                $('#deleteAgencyModal').modal('show');
             }
         });
     });

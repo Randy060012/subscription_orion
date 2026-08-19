@@ -177,9 +177,56 @@ class SoubscriptionController extends Controller
     /**
      * Display the specified resource.
      */
+    /**
+     * Afficher les détails d'une souscription (format JSON pour AJAX)
+     */
     public function show(string $id)
     {
-        //
+        try {
+            $soubscription = Soubscription::with(['agence', 'tarif'])->findOrFail($id);
+
+            return response()->json([
+                'id'             => $soubscription->id,
+                'agence_nom'     => $soubscription->agence->nom ?? '—',
+                'agence_email'   => $soubscription->agence->email ?? '—',
+                'agence_tel'     => $soubscription->agence->telephone ?? '—',
+                'tarif_nom'      => $soubscription->tarif->nom ?? '—',
+                'tarif_prix'     => number_format($soubscription->tarif->prix ?? 0, 0, ',', ' ') . ' FCFA',
+                'duree_jours'    => $soubscription->tarif->duree_jours ?? 0,
+                'date_debut'     => $soubscription->date_debut ? $soubscription->date_debut->format('d/m/Y') : '—',
+                'date_fin'       => $soubscription->date_fin ? $soubscription->date_fin->format('d/m/Y') : '—',
+                'status'         => (bool) $soubscription->status,
+                'status_label'   => $soubscription->status_label,
+                'created_at'     => $soubscription->created_at ? $soubscription->created_at->format('d/m/Y H:i') : '—',
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json(['error' => 'Souscription introuvable.'], 404);
+        }
+    }
+
+    /**
+     * Désactiver une souscription active
+     */
+    public function desactiver(string $id)
+    {
+        try {
+            $soubscription = Soubscription::findOrFail($id);
+
+            if (!$soubscription->status) {
+                return redirect()->back()->with('error', 'Cette souscription est déjà inactive.');
+            }
+
+            // Passation du statut à inactif (0 / false)
+            $soubscription->update([
+                'status' => false,
+            ]);
+
+            return redirect()->back()->with('success', 'La souscription a été désactivée avec succès.');
+        } catch (\Throwable $e) {
+            Log::error('Erreur lors de la désactivation de la souscription : ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de la désactivation.');
+        }
     }
 
     /**
